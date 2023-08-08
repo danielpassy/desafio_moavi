@@ -18,19 +18,12 @@ def create_in_memory_csv():
     return csv_contents
 
 
-def test_upload_files(rf):
-    rf.post(
-        "/upload/",
-        {
-            "file": SimpleUploadedFile(
-                "file.mp3", b"file_content", content_type="audio/mpeg"
-            )
-        },
-        format="multipart",
-    )
+def test_upload_files(client):
+    csv = create_in_memory_csv()
+    file = SimpleUploadedFile("file.csv", csv.encode(), content_type="text/csv")
 
-    # create a csv file
+    res = client.post("/api/submit_csv_register/", {"file": file}, format="multipart")
+    data = res.json()
 
-    response = "1"
-
-    assert response.status_code == 200
+    assert res.status_code == 200
+    assert data["success"] is True
