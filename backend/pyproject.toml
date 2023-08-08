@@ -27,4 +27,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "desafio_moavi.settings"
+norecursedirs = ["data"]
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
