@@ -21,8 +21,11 @@ def create_in_memory_csv():
 def test_upload_files(client):
     csv = create_in_memory_csv()
     file = SimpleUploadedFile("file.csv", csv.encode(), content_type="text/csv")
+    file2 = SimpleUploadedFile("file2.csv", csv.encode(), content_type="text/csv")
 
-    res = client.post("/api/submit_csv_register/", {"file": file}, format="multipart")
+    res = client.post(
+        "/api/submit_csv_register/", {"files": [file, file2]}, format="multipart"
+    )
     data = res.json()
 
     assert res.status_code == 200
