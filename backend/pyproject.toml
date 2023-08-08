@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "desafio-moavi"
+version = "0.1.0"
+description = ""
+authors = ["Daniel Passy <danielpassy@hotmail.com>"]
+readme = "README.md"
+packages = [{include = "desafio_moavi"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pytest = "^7.4.0"
+django-ninja = "^0.22.2"
+ruff = "^0.0.282"
+black = "^23.7.0"
+pytest-django = "^4.5.2"
+django-extensions = "^3.2.3"
+ipython = "^8.14.0"
+dj-database-url = "^2.0.0"
+psycopg2 = "^2.9.7"
+django-cors-headers = "^4.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "desafio_moavi.settings"
+python_files = ["test_*.py", "*_tests.py", "tests.py"]
