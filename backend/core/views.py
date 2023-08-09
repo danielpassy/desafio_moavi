@@ -32,4 +32,12 @@ def list_file_uploaded(request):
 @api.get("/escalas/")
 def get_schedule_register_for_a_day(request, day: date):
     escalas = services.get_escala_for_a_day(day)
-    return 200, {"escalas": [model_to_dict(s) for s in escalas]}
+    return 200, {
+        "escalas": [
+            {
+                "file": {"id": s.file_id, "file_name": s.file.file.name},
+                **model_to_dict(s, exclude=["file"]),
+            }
+            for s in escalas
+        ]
+    }

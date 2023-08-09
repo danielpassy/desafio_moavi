@@ -67,7 +67,7 @@ def test_get_escalar_for_a_day(client):
 
     assert escalas[0]["matricula_colaborador"] == "123"
     assert escalas[0]["timestamp"] == today.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-    assert escalas[0]["file"] == escala_criada.file_id
+    assert escalas[0]["file"] == {"id": escala_criada.file_id, "file_name": "file.csv"}
 
 
 def test_list_file_uploads(client):

@@ -49,7 +49,11 @@ def handle_csv_files(
 
 
 def get_escala_for_a_day(date_of_shift: date) -> list[EscalaRecord]:
-    return list(EscalaRecord.objects.filter(timestamp__date=date_of_shift))
+    return list(
+        EscalaRecord.objects.select_related("file").filter(
+            timestamp__date=date_of_shift
+        )
+    )
 
 
 def get_file_records() -> list[FileUploadRecord]:
