@@ -9,3 +9,9 @@ class FileUploadRegister(models.Model):
 
     def __str__(self):
         return str(self.file)
+
+
+class ShiftRegister(models.Model):
+    file = models.ForeignKey(FileUploadRegister, on_delete=models.DO_NOTHING)
+    matricula_colaborador = models.TextField()
+    timestamp = models.DateTimeField()
