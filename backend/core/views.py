@@ -7,17 +7,17 @@ from core import services
 api = NinjaAPI()
 
 
-@api.post("/file_register/")
-def submit_csv_register(request, files: list[UploadedFile]):
-    created = services.handle_csv_schedule(files)
+@api.post("/files/")
+def upload_csv_file(request, files: list[UploadedFile]):
+    created = services.handle_csv_files(files)
     num_of_files = len(created)
     print(num_of_files)
     return 200, {"success": True}
 
 
-@api.get("/file_register/")
-def get_file_register(request):
-    files = services.get_file_register()
+@api.get("/files/")
+def list_file_uploaded(request):
+    files = services.get_file_records()
     return 200, {
         "files": [
             {
@@ -29,7 +29,7 @@ def get_file_register(request):
     }
 
 
-@api.get("/schedules/")
+@api.get("/escalas/")
 def get_schedule_register_for_a_day(request, day: date):
-    schedules = services.get_schedule_register_for_a_day(day)
-    return 200, {"schedules": [model_to_dict(s) for s in schedules]}
+    escalas = services.get_escala_for_a_day(day)
+    return 200, {"escalas": [model_to_dict(s) for s in escalas]}

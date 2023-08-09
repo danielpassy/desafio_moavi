@@ -1,8 +1,7 @@
 from django.db import models
 
 
-# Create your models here.
-class FileUploadRegister(models.Model):
+class FileUploadRecord(models.Model):
     file = models.FileField(upload_to="csv_files/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
     number_of_entries = models.IntegerField()
@@ -11,7 +10,7 @@ class FileUploadRegister(models.Model):
         return str(self.file)
 
 
-class ShiftRegister(models.Model):
-    file = models.ForeignKey(FileUploadRegister, on_delete=models.DO_NOTHING)
+class EscalaRecord(models.Model):
+    file = models.ForeignKey(FileUploadRecord, on_delete=models.DO_NOTHING)
     matricula_colaborador = models.TextField()
     timestamp = models.DateTimeField()

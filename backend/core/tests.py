@@ -2,46 +2,44 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
 from core import services
-from core.models import FileUploadRegister, ShiftRegister
+from core.models import FileUploadRecord, EscalaRecord
 
 
 def test_upload_multiple_files(client, mocker):
-    mocker.patch("core.services.handle_csv_schedule")
+    mocker.patch("core.services.handle_csv_files")
     file = get_CSV_example_as_uploadedFile()
     file2 = get_CSV_example_as_uploadedFile()
 
-    res = client.post(
-        "/api/submit_csv_register/", {"files": [file, file2]}, format="multipart"
-    )
+    res = client.post("/api/files/", {"files": [file, file2]}, format="multipart")
     data = res.json()
 
     assert res.status_code == 200
     assert data["success"] is True
 
 
-def test_correct_register_number_of_rows():
+def test_correctly_record_number_of_rows_in_file():
     file = get_CSV_example_as_uploadedFile()
 
-    services.handle_csv_schedule([file])  # type: ignore
-    register = FileUploadRegister.objects.all().first()
+    services.handle_csv_files([file])  # type: ignore
+    register = FileUploadRecord.objects.all().first()
 
     assert register is not None
     assert register.file == "file.csv"
     assert register.number_of_entries == 208
 
 
-def test_register_shift_from_csv():
+def test_record_escala_from_file():
     file = get_CSV_example_as_uploadedFile()
 
-    services.handle_csv_schedule([file])  # type: ignore
-    shifts = ShiftRegister.objects.all()
-    files = FileUploadRegister.objects.all()
+    services.handle_csv_files([file])  # type: ignore
+    escalas = EscalaRecord.objects.all()
+    files = FileUploadRecord.objects.all()
 
-    assert len(shifts) == 208
+    assert len(escalas) == 208
     assert len(files) == 1
-    assert shifts[0].matricula_colaborador
-    assert shifts[0].timestamp
-    assert shifts[0].file == files[0]
+    assert escalas[0].matricula_colaborador
+    assert escalas[0].timestamp
+    assert escalas[0].file == files[0]
 
 
 def get_CSV_example_as_uploadedFile():
@@ -52,35 +50,33 @@ def get_CSV_example_as_uploadedFile():
     return SimpleUploadedFile("file.csv", f.read().encode(), content_type="text/csv")
 
 
-def test_get_schedule_register_for_a_day(client):
+def test_get_escalar_for_a_day(client):
     today = timezone.now()
-    register = ShiftRegister.objects.create(
+    escala_criada = EscalaRecord.objects.create(
         matricula_colaborador="123",
         timestamp=today,
-        file=FileUploadRegister.objects.create(
+        file=FileUploadRecord.objects.create(
             file="file.csv",
             number_of_entries=1,
         ),
     )
 
-    res = client.get("/api/schedules/", {"day": today.date()})
+    res = client.get("/api/escalas/", {"day": today.date()})
     data = res.json()
-    schedules = data["schedules"]
+    escalas = data["escalas"]
 
-    assert schedules[0]["matricula_colaborador"] == "123"
-    assert (
-        schedules[0]["timestamp"] == today.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-    )
-    assert schedules[0]["file"] == register.file_id
+    assert escalas[0]["matricula_colaborador"] == "123"
+    assert escalas[0]["timestamp"] == today.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+    assert escalas[0]["file"] == escala_criada.file_id
 
 
-def test_get_upload_register(client):
-    file_register = FileUploadRegister.objects.create(
+def test_list_file_uploads(client):
+    file_register = FileUploadRecord.objects.create(
         file="file.csv",
         number_of_entries=1,
     )
 
-    res = client.get("/api/file_register/")
+    res = client.get("/api/files/")
     data = res.json()
     files = data["files"]
 
