@@ -83,7 +83,7 @@ WSGI_APPLICATION = "desafio_moavi.wsgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         env="DATABASE_URL",
-        default="postgres://postgres:postgres@localhost/inoa",
+        default="postgres://postgres:postgres@localhost/moavi",
     )
 }
 
@@ -111,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Sao_Paulo"
 
 USE_I18N = True
 
