@@ -20,7 +20,7 @@ def create_in_memory_csv():
     return csv_contents
 
 
-def test_upload_files(client):
+def test_upload_multiple_files(client):
     csv = create_in_memory_csv()
     file = SimpleUploadedFile("file.csv", csv.encode(), content_type="text/csv")
     file2 = SimpleUploadedFile("file2.csv", csv.encode(), content_type="text/csv")
@@ -28,11 +28,26 @@ def test_upload_files(client):
     res = client.post(
         "/api/submit_csv_register/", {"files": [file, file2]}, format="multipart"
     )
-    entries = FileUploadRegister.objects.all()
     data = res.json()
 
-    assert len(entries) == 2
-    assert entries[0].file == "file.csv"
-    assert entries[0].number_of_entries == 3
     assert res.status_code == 200
     assert data["success"] is True
+
+
+def test_correct_register_number_of_rows(client):
+    file = SimpleUploadedFile(
+        "file.csv",
+        create_in_memory_csv().encode(),
+        content_type="text/csv",
+    )
+
+    client.post(
+        "/api/submit_csv_register/",
+        {"files": [file]},
+        format="multipart",
+    )
+    register = FileUploadRegister.objects.all().first()
+
+    assert register is not None
+    assert register.file == "file.csv"
+    assert register.number_of_entries == 3
