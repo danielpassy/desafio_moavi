@@ -18,6 +18,7 @@ ipython = "^8.14.0"
 dj-database-url = "^2.0.0"
 psycopg2 = "^2.9.7"
 django-cors-headers = "^4.2.0"
+pytest-mock = "^3.11.1"
 
 
 [build-system]
@@ -27,5 +28,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "desafio_moavi.settings"
-norecursedirs = ["data"]
+norecursedirs = [".data"]
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
