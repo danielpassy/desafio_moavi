@@ -16,7 +16,7 @@ def upload_csv_file(request, files: list[UploadedFile]):
 
 
 @api.get("/files/")
-def list_file_uploaded(request):
+def list_uploaded_files(request):
     files = services.get_file_records()
     return 200, {
         "files": [
@@ -30,7 +30,7 @@ def list_file_uploaded(request):
 
 
 @api.get("/escalas/")
-def get_schedule_register_for_a_day(request, day: date):
+def get_escalas_for_a_specific_day(request, day: date):
     escalas = services.get_escala_for_a_day(day)
     return 200, {
         "escalas": [
