@@ -1,5 +1,12 @@
 import { Clear } from '@mui/icons-material';
-import { Box, Button, Collapse, IconButton, Typography, Container } from '@mui/material';
+import {
+  Box,
+  Button,
+  Collapse,
+  IconButton,
+  Typography,
+  Container,
+} from '@mui/material';
 
 import { ChangeEventHandler, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
@@ -46,28 +53,35 @@ export default function HomePage() {
 
         {inputFileButton(addFiles)}
 
-        <Box
-          sx={{
-            border: '1px solid #ccc',
-            borderRadius: '3px',
-            my: 2,
-            p: 2,
-            display: 'inline-block',
-            flexDirection: 'row',
-            justifyContent: 'beginning',
-          }}
-        >
-          {fileDisplay(file, deleteFile)}
-        </Box>
+        {file ? (
+          <Box
+            sx={{
+              my: 2,
+              p: 2,
+              display: 'inline-block',
+              flexDirection: 'row',
+              justifyContent: 'beginning',
+            }}
+          >
+            {fileDisplay(file, deleteFile)}
+          </Box>
+        ) : null}
 
-        <Button onClick={uploadFiles} variant="contained" component="span">
+        <Button
+          disabled={file.length === 0}
+          onClick={uploadFiles}
+          variant="contained"
+          component="span"
+        >
           Upload
         </Button>
       </Box>
     </Container>
   );
 }
-function inputFileButton(addFiles: ChangeEventHandler<HTMLInputElement> | undefined) {
+function inputFileButton(
+  addFiles: ChangeEventHandler<HTMLInputElement> | undefined,
+) {
   return (
     <>
       <input

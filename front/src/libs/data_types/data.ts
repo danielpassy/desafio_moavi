@@ -1,7 +1,7 @@
 export interface FileUploadRecord {
   id: number;
   file_name: string;
-  uploaded_at: Date;
+  uploaded_at: string;
   number_of_entries: number;
 }
 
