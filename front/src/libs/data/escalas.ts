@@ -2,7 +2,7 @@ import httpClient from '@/libs/data/http';
 
 export default {
   listUploadedFiles: () => httpClient.get('/files/').then((res) => res.data),
-  getEscalaForASpecificDay: (day: any) =>
+  getEscalaForADay: (day: any) =>
     httpClient.get('/escalas/', { params: { day } }).then((res) => res.data),
   uploadFiles: (files: File[]) => {
     const formData = new FormData();
