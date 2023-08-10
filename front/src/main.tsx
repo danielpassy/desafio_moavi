@@ -16,7 +16,6 @@ root.render(
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <SnackBarContextProvider>
         <SnackBar />
-        {/* <NavBar /> */}
         <RouterProvider router={router} />
       </SnackBarContextProvider>
     </LocalizationProvider>

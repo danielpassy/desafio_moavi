@@ -15,6 +15,9 @@ import {
   convertPayloadToGraphData,
   readableIntervals,
 } from '@/pages/historico/graph-helper';
+import { Box, IconButton, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 
 ChartJS.register(
   CategoryScale,
@@ -59,7 +62,7 @@ export default function HistoricoColaboadores() {
         {
           base: 0,
           label: 'Colaboradores',
-          backgroundColor: 'red',
+          backgroundColor: 'gray',
           data: hourlyData,
         },
       ],
@@ -78,10 +81,48 @@ export default function HistoricoColaboadores() {
   }, [day]);
 
   return (
-    <>
-      {Object.values(chartData).length !== 0 ? (
-        <Bar options={options} data={chartData} />
-      ) : null}
-    </>
+    <Box
+      sx={{
+        m: 3,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Typography variant="h4" component="h4">
+        Quantidade de colaboradores durante o dia
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <IconButton
+          aria-label="previous day"
+          onClick={() => setDay(day.add(-1, 'days'))}
+        >
+          <ChevronLeft />
+        </IconButton>
+        <DatePicker
+          value={day}
+          onChange={(newVal) => setDay(newVal ?? dayjs('2023-05-30'))}
+        />
+        <IconButton
+          aria-label="next day"
+          onClick={() => setDay(day.add(+1, 'days'))}
+        >
+          <ChevronRight />
+        </IconButton>
+      </Box>
+      <Box sx={{ width: '70%' }}>
+        {Object.values(chartData).length !== 0 ? (
+          <Bar options={options} data={chartData} />
+        ) : null}
+      </Box>
+    </Box>
   );
 }
