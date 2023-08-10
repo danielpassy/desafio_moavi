@@ -14,5 +14,5 @@ export interface EscalaRecord {
   id: number;
   file: simpleFileRecord;
   matricula_colaborador: string;
-  timestamp: Date;
+  timestamp: string;
 }
