@@ -37,7 +37,34 @@ export const options = {
 };
 
 // labels are hours of the day
-const labels = Array.from({ length: 12 }, (_, i) => `${i * 2}:00`);
+const labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+const asdasd = Array.from({ length: 24 }, (_, i) => i);
+
+export const DefaultData = {
+  labels,
+  datasets: [
+    {
+      label: 'Blue',
+      backgroundColor: 'blue',
+      data: [0.5, 0.1, 4],
+    },
+    {
+      label: 'Red',
+      backgroundColor: 'red',
+      data: [4, 3, 5],
+    },
+    {
+      label: 'Green',
+      backgroundColor: 'green',
+      data: [7, 2, 6],
+    },
+    {
+      label: 'Dataset 1',
+      data: [7, 2, 6],
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    },
+  ],
+};
 
 function createNumberArray(x: number, y: number): number[] {
   return Array.from({ length: y - x + 1 }, (_, index) => x + index);
@@ -80,36 +107,34 @@ function arrangePayloadToBePrinted(escalas: EscalaRecord[]) {
 }
 
 export default function HistoricoColaboadores() {
-  const [things, setThings] = useState<any>('');
   const [day, setDay] = useState(dayjs('2023-05-30'));
-  const [data, setData] = useState<any>({});
+  const [chartData, setChartData] = useState<any>({});
 
   const createData = (dataSets: number[][]) => {
-    setData({
+    setChartData({
       labels,
-      dataSets: dataSets.map((data: number[]) => {
+      dataSets: dataSets.map((ds: number[]) => {
         return {
-          label: 'nothing',
+          label: labels,
           backgroundColor: 'blue',
-          data: data,
+          data: [],
         };
       }),
     });
   };
 
   useEffect(() => {
-    api.escalas
-      .getEscalaForASpecificDay(day.format('YYYY-MM-DD'))
-      .then((res: { [key: string]: EscalaRecord[] }) => {
-        const hoursByColaborador = arrangePayloadToBePrinted(res.escalas);
-        createData(hoursByColaborador);
-        setThings(hoursByColaborador);
-      });
+    const getData = async () => {
+      const res = await api.escalas.getEscalaForADay(day.format('YYYY-MM-DD'));
+      const hoursByColaborador = arrangePayloadToBePrinted(res.escalas);
+      createData(hoursByColaborador);
+    };
+    getData();
   }, [day]);
 
   return (
     <>
-      <Bar options={options} data={data} />
+      <Bar options={options} data={chartData} />{' '}
     </>
   );
 }
