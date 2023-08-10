@@ -38,7 +38,8 @@ export const options = {
 
 // labels are hours of the day
 const labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
-const asdasd = Array.from({ length: 24 }, (_, i) => i);
+const array24Elements = Array.from({ length: 24 }, (_, i) => i);
+const array24Strings = Array.from({ length: 24 }, (_, i) => i.toString());
 
 export const DefaultData = {
   labels,
@@ -90,37 +91,43 @@ function arrangePayloadToBePrinted(escalas: EscalaRecord[]) {
   });
 
   // than, transform 9->11, 14-20 to 9, 10, 11, 14, 15, 16, 17, 18, 19, 20[
-  const groupedHours: { [key: string]: Set<number> } = {};
+  const hourlyCount: { [key: number]: number } = {};
+  array24Elements.map((hour: number) => {
+    hourlyCount[hour] = 0;
+  });
+
   for (const key in groupedMatricula) {
     const numEntries = groupedMatricula[key].length;
-    groupedHours[key] = new Set();
     // i is always even, because if someone enters, he will leave.
     for (let i = 0; i < numEntries / 2; i++) {
       const entryHour = time_svc(groupedMatricula[key][i].timestamp).hour();
       const exitHour = time_svc(groupedMatricula[key][i + 1].timestamp).hour();
-      createNumberArray(entryHour, exitHour).forEach((item) =>
-        groupedHours[key].add(item),
+      createNumberArray(entryHour, exitHour).forEach(
+        (item) => (hourlyCount[item] = hourlyCount[item] + 1),
       );
     }
   }
-  return Object.values(groupedHours).map((hoursSet) => [...hoursSet]);
+
+  return Object.values(hourlyCount);
 }
 
 export default function HistoricoColaboadores() {
   const [day, setDay] = useState(dayjs('2023-05-30'));
   const [chartData, setChartData] = useState<any>({});
 
-  const createData = (dataSets: number[][]) => {
-    setChartData({
-      labels,
-      dataSets: dataSets.map((ds: number[]) => {
+  const createData = (hourlyData: number[]) => {
+    const _data = {
+      labels: array24Strings,
+      datasets: hourlyData.map((hour: number) => {
         return {
-          label: labels,
-          backgroundColor: 'blue',
-          data: [],
+          label: hour.toString(),
+          backgroundColor: 'red',
+          data: [0, 0, 0, 0, 0, 1, 2, 3, 4],
         };
       }),
-    });
+    };
+    console.log(_data);
+    setChartData(_data);
   };
 
   useEffect(() => {
@@ -134,7 +141,9 @@ export default function HistoricoColaboadores() {
 
   return (
     <>
-      <Bar options={options} data={chartData} />{' '}
+      {Object.values(chartData).length !== 0 ? (
+        <Bar options={options} data={chartData} />
+      ) : null}
     </>
   );
 }
