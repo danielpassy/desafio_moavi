@@ -10,8 +10,8 @@ api = NinjaAPI()
 def upload_csv_file(request, files: list[UploadedFile]):
     try:
         created = services.handle_csv_files(files)
-    except Exception as e:
-        return 400, {"success": False, "error": str(e)}
+    except Exception:
+        return 400, {"success": False, "error": "Arquivo inválido"}
     num_of_files = len(created)
     print(num_of_files)
     return 200, {"success": True}
@@ -33,8 +33,8 @@ def list_uploaded_files(request):
 
 
 @api.get("/escalas/")
-def get_escalas_for_a_specific_day(request, day: str):
-    escalas = services.get_escala_for_a_day(day)
+def get_escalas_for_a_specific_day(request, initDay: str, endDay: str):
+    escalas = services.get_escalas(initDay, endDay)
     print(
         {
             "escalas": [

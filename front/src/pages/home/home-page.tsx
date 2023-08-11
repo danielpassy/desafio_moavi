@@ -12,6 +12,7 @@ import { ChangeEventHandler, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import api from '@api';
 import useSnackbar from '@/hooks/snack-context';
+
 export default function HomePage() {
   const [file, setFile] = useState<File[]>([]);
   const snackbar = useSnackbar();
@@ -34,49 +35,45 @@ export default function HomePage() {
       setFile([]);
       snackbar.displayMsg('Upload realizado com sucesso', 'success');
     } catch (error: any) {
-      snackbar.displayMsg(`Erro ao realizar upload: ${error.message}`, 'error');
+      console.log(error);
+      snackbar.displayMsg(
+        `Erro ao realizar upload: ${error.response.data.error}`,
+        'error',
+      );
     }
   };
 
   return (
-    <Container
-      sx={{
-        m: 4,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h4" sx={{ mb: 4 }}>
-          Upload CSV
-        </Typography>
+    <>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Envie arquivo CSV
+      </Typography>
 
-        {inputFileButton(addFiles)}
+      {inputFileButton(addFiles)}
 
-        {file ? (
-          <Box
-            sx={{
-              my: 2,
-              p: 2,
-              display: 'inline-block',
-              flexDirection: 'row',
-              justifyContent: 'beginning',
-            }}
-          >
-            {fileDisplay(file, deleteFile)}
-          </Box>
-        ) : null}
-
-        <Button
-          disabled={file.length === 0}
-          onClick={uploadFiles}
-          variant="contained"
-          component="span"
+      {file ? (
+        <Box
+          sx={{
+            my: 2,
+            p: 2,
+            display: 'inline-block',
+            flexDirection: 'row',
+            justifyContent: 'beginning',
+          }}
         >
-          Upload
-        </Button>
-      </Box>
-    </Container>
+          {fileDisplay(file, deleteFile)}
+        </Box>
+      ) : null}
+
+      <Button
+        disabled={file.length === 0}
+        onClick={uploadFiles}
+        variant="contained"
+        component="span"
+      >
+        Upload
+      </Button>
+    </>
   );
 }
 function inputFileButton(

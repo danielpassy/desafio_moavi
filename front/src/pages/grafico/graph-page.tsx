@@ -10,14 +10,14 @@ import {
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import api from '@api';
-import dayjs from 'dayjs';
 import {
   convertPayloadToGraphData,
   readableIntervals,
-} from '@/pages/historico/graph-helper';
+} from '@/pages/grafico/graph-helper';
 import { Box, IconButton, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import time_svc from '@/libs/time_svc';
 
 ChartJS.register(
   CategoryScale,
@@ -35,8 +35,7 @@ export const options = {
       display: false,
     },
     title: {
-      display: true,
-      text: 'Chart.js Bar Chart',
+      display: false,
     },
   },
   scales: {
@@ -51,8 +50,8 @@ export const options = {
   },
 };
 
-export default function HistoricoColaboadores() {
-  const [day, setDay] = useState(dayjs('2023-05-30'));
+export default function GraphPage() {
+  const [day, setDay] = useState(time_svc('2023-05-30'));
   const [chartData, setChartData] = useState<any>({});
 
   const createData = (hourlyData: number[]) => {
@@ -73,7 +72,10 @@ export default function HistoricoColaboadores() {
 
   useEffect(() => {
     const getData = async () => {
-      const res = await api.escalas.getEscalaForADay(day.format('YYYY-MM-DD'));
+      const res = await api.escalas.getEscalas(
+        day.format('YYYY-MM-DD'),
+        day.add(1, 'days').format('YYYY-MM-DD'),
+      );
       const intervalsOccupation = convertPayloadToGraphData(res.escalas);
       createData(intervalsOccupation);
     };
@@ -81,48 +83,43 @@ export default function HistoricoColaboadores() {
   }, [day]);
 
   return (
-    <Box
-      sx={{
-        m: 3,
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Typography variant="h4" component="h4">
+    <>
+      <Typography variant="h4" component="h4" sx={{ mb: 3 }}>
         Quantidade de colaboradores durante o dia
       </Typography>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
-        <IconButton
-          aria-label="previous day"
-          onClick={() => setDay(day.add(-1, 'days'))}
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
         >
-          <ChevronLeft />
-        </IconButton>
-        <DatePicker
-          value={day}
-          onChange={(newVal) => setDay(newVal ?? dayjs('2023-05-30'))}
-        />
-        <IconButton
-          aria-label="next day"
-          onClick={() => setDay(day.add(+1, 'days'))}
-        >
-          <ChevronRight />
-        </IconButton>
+          <IconButton
+            aria-label="previous day"
+            onClick={() => setDay(day.add(-1, 'days'))}
+          >
+            <ChevronLeft />
+          </IconButton>
+          <DatePicker
+            label="Dia"
+            format="DD/MM/YYYY"
+            value={day}
+            onChange={(newVal) => setDay(newVal ?? time_svc('2023-05-30'))}
+          />
+          <IconButton
+            aria-label="next day"
+            onClick={() => setDay(day.add(+1, 'days'))}
+          >
+            <ChevronRight />
+          </IconButton>
+        </Box>
       </Box>
-      <Box sx={{ width: '70%' }}>
+      <Box sx={{ width: '100%' }}>
         {Object.values(chartData).length !== 0 ? (
           <Bar options={options} data={chartData} />
         ) : null}
       </Box>
-    </Box>
+    </>
   );
 }

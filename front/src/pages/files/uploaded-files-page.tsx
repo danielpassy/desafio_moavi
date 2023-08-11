@@ -17,7 +17,7 @@ import {
 import time_svc from '@/libs/time_svc';
 import { useNavigate } from 'react-router-dom';
 
-export default function UploadedFiles() {
+export default function UploadFilesPage() {
   const [fileUploadRecord, setFileUploadRecord] = useState<FileUploadRecord[]>(
     [],
   );
@@ -31,24 +31,10 @@ export default function UploadedFiles() {
   }, []);
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Typography variant="h4">Arquivos enviados</Typography>
-        <Box></Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigator('/')}
-        >
-          Voltar
-        </Button>
-      </Box>
+    <>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Arquivos enviados
+      </Typography>
       <TableContainer component={Paper}>
         <Table
           sx={{
@@ -59,7 +45,7 @@ export default function UploadedFiles() {
           <TableHead>
             <TableRow>
               <TableCell>Id </TableCell>
-              <TableCell>Nome do Arqivo </TableCell>
+              <TableCell>Nome do Arquivo </TableCell>
               <TableCell>Data de upload </TableCell>
               <TableCell>Número de entradas </TableCell>
             </TableRow>
@@ -81,7 +67,7 @@ export default function UploadedFiles() {
                   {file.file_name}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  às {time_svc(file.uploaded_at).format('mm:HH, DD/MM/YYYY')}
+                  às {time_svc(file.uploaded_at).format('HH:mm, DD/MM/YYYY')}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {file.number_of_entries}
@@ -91,6 +77,6 @@ export default function UploadedFiles() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </>
   );
 }

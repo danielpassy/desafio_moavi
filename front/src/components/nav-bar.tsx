@@ -1,6 +1,7 @@
 import { AppBar, Toolbar, Button, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Folder, History, Home } from '@mui/icons-material';
+import { Folder, History, Home, ShowChart, Upload } from '@mui/icons-material';
+
 export default function NavBar() {
   const navigator = useNavigate();
 
@@ -19,12 +20,12 @@ export default function NavBar() {
             onClick={() => navigator('/')}
             variant="outlined"
             sx={{ color: ' white' }}
-            startIcon={<Home />}
+            startIcon={<Upload />}
           >
             Enviar arquivos
           </Button>
           <Button
-            onClick={() => navigator('/uploaded-files')}
+            onClick={() => navigator('/files')}
             size="large"
             sx={{ color: ' white', m: 'auto' }}
             startIcon={<Folder />}
@@ -32,12 +33,20 @@ export default function NavBar() {
             Arquivos Enviados
           </Button>
           <Button
-            onClick={() => navigator('/historico-colaboradores')}
+            onClick={() => navigator('/grafico')}
+            size="large"
+            sx={{ color: ' white', m: 'auto' }}
+            startIcon={<ShowChart />}
+          >
+            Gráfico de presença
+          </Button>
+          <Button
+            onClick={() => navigator('/historico')}
             size="large"
             sx={{ color: ' white', m: 'auto' }}
             startIcon={<History />}
           >
-            Histórico presença
+            Registro presença
           </Button>
         </Stack>
       </Toolbar>

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -61,7 +62,10 @@ def test_get_escalar_for_a_day(client):
         ),
     )
 
-    res = client.get("/api/escalas/", {"day": today.date()})
+    res = client.get(
+        "/api/escalas/",
+        {"initDay": today.date(), "endDay": (today + timedelta(days=1)).date()},
+    )
     data = res.json()
     escalas = data["escalas"]
 

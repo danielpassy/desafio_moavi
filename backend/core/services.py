@@ -1,6 +1,5 @@
 import codecs
 import csv
-from datetime import date
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 
@@ -48,10 +47,10 @@ def handle_csv_files(
     return file_entries_created, shift_entries_created
 
 
-def get_escala_for_a_day(date_of_shift: date) -> list[EscalaRecord]:
+def get_escalas(initDay: str, endDay: str) -> list[EscalaRecord]:
     return list(
         EscalaRecord.objects.select_related("file").filter(
-            timestamp__date=date_of_shift
+            timestamp__range=[initDay, endDay]
         )
     )
 
